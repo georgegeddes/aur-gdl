@@ -15,15 +15,15 @@ depends=('python2' 'python2-numpy' 'plplot510' 'gsl' 'readline' 'hdf5' 'netcdf' 
 makedepends=('cmake')
 options=('!makeflags')
 source=(http://downloads.sourceforge.net/gnudatalanguage/gdl-${pkgver}.tgz \
-    gdl-tirpc.patch \
+    gdl-tirpc.patch
     gdl.profile)
 md5sums=('451532f1263bbaa8745a4ca8978533c0'
-         'cad6430a812e906ee7f1e15b4589dcac'
+	 '3f25bea333fc5084851af49dc92ed42e'
          '40aa5fd8278cd8e80425c62a577563cc')
 
 prepare() {
-  cd $srcdir/gdl-${pkgver}/
-  patch -p1 < ../gdl-tirpc.patch
+  cd $srcdir/gdl-${pkgver}
+  patch -u -l -p1 <../gdl-tirpc.patch
 }
 
 build() {
@@ -38,9 +38,12 @@ build() {
       -DMAGICK=NO -DFFTW=YES -DHDF5=NO -DHDF=NO -DGRIB=YES -DUDUNITS=YES \
       -DCMAKE_C_FLAGS="-I/usr/include/ImageMagick \
             -I/usr/include/python2.7 \
-            -I/usr/lib/python2.7/site-packages/numpy/core/include" ..
+            -I/usr/lib/python2.7/site-packages/numpy/core/include" \
+	    -I/usr/include/tirpc \
+	    ..
   make
 }
+
 package() {
   cd $srcdir/gdl-${pkgver}/build
   make DESTDIR=$pkgdir install
